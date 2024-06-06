@@ -1,22 +1,16 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-  PutCommand,
-  DynamoDBDocumentClient,
-  GetCommand,
-} from "@aws-sdk/lib-dynamodb";
+import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
 
 const client = new DynamoDBClient({});
-const docClient = DynamoDBDocumentClient.from(client);
 
 export const getItem = async (id) => {
-  const command = new GetCommand({
-    TableName: "demo-abbott-demoAbbott-1TMM2C43BCIKL",
-    Key: {
-      "id-card": id,
+  const command = new GetItemCommand({
+    "TableName": "demo-abbott-demoAbbott-1TMM2C43BCIKL",
+    "Key": {
+      "id-card": {"N": id},
     },
   });
 
-  const response = await docClient.send(command);
+  const response = await client.send(command);
   console.log("getResponse", response);
   return response;
 };
