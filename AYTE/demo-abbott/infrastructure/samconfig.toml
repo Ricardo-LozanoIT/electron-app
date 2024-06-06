@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "demo-abbott"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-szitgj657v5k"
+s3_prefix = "demo-abbott"
+region = "us-east-1"
+profile = "itcondev"
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
