@@ -1,0 +1,79 @@
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  demoAbbottApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub
+        - ${ResourceName} From Stack ${AWS::StackName}
+        - ResourceName: demoAbbottApiGateway
+      StageName: Prod
+      DefinitionBody:
+        openapi: '3.0'
+        info: {}
+        paths:
+          /:
+            put:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${demoAbbottFunction.Arn}/invocations
+              responses: {}
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri: !Sub arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${demoAbbottFunction.Arn}/invocations
+              responses: {}
+      EndpointConfiguration: REGIONAL
+      TracingEnabled: true
+      Cors:
+        MaxAge: 5
+  demoAbbott:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: id-card
+          AttributeType: 'N'
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        - AttributeName: id-card
+          KeyType: HASH
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+  demoAbbottFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Description: !Sub
+        - Stack ${AWS::StackName} Function ${ResourceName}
+        - ResourceName: demoAbbottFunction
+      CodeUri: src/demoAbbottFunction
+      Handler: index.handler
+      Runtime: nodejs18.x
+      MemorySize: 2008
+      Timeout: 30
+      Tracing: Active
+      Events:
+        demoAbbottApiGatewayPUT:
+          Type: Api
+          Properties:
+            Path: /
+            Method: PUT
+            RestApiId: !Ref demoAbbottApiGateway
+        demoAbbottApiGatewayGET:
+          Type: Api
+          Properties:
+            Path: /
+            Method: GET
+            RestApiId: !Ref demoAbbottApiGateway
+      Environment:
+        Variables:
+          DEMOABBOTT_TABLE_NAME: !Ref demoAbbott
+          DEMOABBOTT_TABLE_ARN: !GetAtt demoAbbott.Arn
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref demoAbbott
+  demoAbbottFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Retain
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${demoAbbottFunction}
