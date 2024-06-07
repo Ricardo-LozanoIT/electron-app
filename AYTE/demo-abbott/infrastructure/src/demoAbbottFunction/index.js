@@ -117,9 +117,10 @@ export const handler = async (event, context, callback) => {
   let res = {
     statusCode: 200,
     headers: {
-      "Content-Type": "*/*",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*", // Required for CORS support to work
     },
   };
-  res.body = "Hello, " + "world" + "!";
+  res.body = "{ \"message\": \"Hello from Abbott!\"}";
   callback(null, res);
 };
