@@ -1,6 +1,11 @@
-import { DynamoDBClient, GetItemCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
-
+import {
+  DynamoDBClient,
+  GetItemCommand,
+  PutItemCommand,
+  UpdateItemCommand,
+} from "@aws-sdk/client-dynamodb";
 import { SendEmailCommand, SESClient } from "@aws-sdk/client-ses";
+import { unmarshall } from "@aws-sdk/util-dynamodb";
 
 // Set the AWS Region.
 const REGION = "us-east-1";
@@ -11,7 +16,7 @@ const sesClient = new SESClient({ region: REGION });
 const client = new DynamoDBClient({});
 
 export const getItem = async (id) => {
-  console.log("before get")
+  console.log("before get");
   const command = new GetItemCommand({
     TableName: "demo-abbott-demoAbbott-1TMM2C43BCIKL",
     Key: {
@@ -20,27 +25,32 @@ export const getItem = async (id) => {
   });
 
   const response = await client.send(command);
-  console.log("getResponse", response);
-  return response;
-};
-
-export const putItem = async (params, code) => {
-  console.log("before put")
-  const { TableName, Item} = params
-  const command = new PutItemCommand({
-    TableName: TableName,
-    Item: Item,
-  });
-
-  const response = await client.send(command);
-  console.log("putResponse",response);
-
-  if(code == "231540"){
-    return response;
+  if (!response.Item) {
+    return null;
   }
+  const regularObject = unmarshall(response.Item);
+  console.log("getResponse", regularObject);
+
+  return regularObject;
 };
 
-const sendEmail = async (recipient) => {
+export const updateItem = async (id, code) => {
+  console.log("before update");
+  const params = {
+    TableName: "demo-abbott-demoAbbott-1TMM2C43BCIKL",
+    Key: {
+      "id-card": { N: id },
+    },
+    UpdateExpression: "set code = :code", ExpressionAttributeValues: {":code": { N: ''+code}}, ReturnValues: "ALL_NEW"
+  };
+  const command = new UpdateItemCommand(params);
+  const response = await client.send(command);
+  console.log("updateResponse", response);
+  return response;
+
+};
+
+const sendEmail = async (recipient, code) => {
   // Send email
   const command = new SendEmailCommand({
     Destination: {
@@ -50,12 +60,12 @@ const sendEmail = async (recipient) => {
       Body: {
         Text: {
           Charset: "UTF-8",
-          Data: "Hello, world!",
+          Data: `Para verificar su correo electrónico, use esta contraseña de un solo uso (OTP): ${code}`,
         },
       },
       Subject: {
         Charset: "UTF-8",
-        Data: "TEST SES EMAIL",
+        Data: "Verifique su dirección de correo electrónico de Abbott",
       },
     },
     Source: "juan.paredes@ayte.co",
@@ -73,45 +83,34 @@ const sendEmail = async (recipient) => {
 };
 
 export const handler = async (event, context, callback) => {
-  // Create a put event to send data to dynamoDB
-  const id = "100640110";
-  const params = {
-    "TableName": "demo-abbott-demoAbbott-1TMM2C43BCIKL",
-    "Item": {
-      "id-card": {"N": "100640110"},
-      "create-date": {"S": "06/06/2024"},
-      "mail": {"S": "prueba@ayte.co"},
-      "name": {"S": "Camila"},
-      "phone": {"S": "+57 301010451"},
-      "visitor": {
-        "L": [
-          {
-            "M": {
-              "count": { "N": "5" },
-              "name": { "S": "Visitor M" },
-              "product": { "S": "sevedol" }
-            }
-          }
-        ]
-      }
-    },
-  }
-  const code = event.queryStringParameters.code;
 
-  await getItem(id);
-  await putItem(params, code);
+  const id = event.queryStringParameters?.id;
+  const code = event.queryStringParameters?.code;
+  let otpCode = Math.floor(100000 + Math.random() * 900000);
+  let allow = false;
 
   console.log("event", event);
-  if (event.httpMethod == "GET") {
-    console.log("esto es un GET");
-    try {
-      const response = await sendEmail("juan.paredes@ayte.co");
-      console.log("response email send", response);
-    } catch (error) {
-      console.error("Error Sending email", error);
+  if (event.httpMethod == "GET" && id && event.path != '/code') {
+    const responseDynamo = await getItem(id);
+    if (responseDynamo == null) {
+      allow = false;
+    } else {
+      allow = true;
+      try {
+        const responseMail = await sendEmail(responseDynamo?.mail, otpCode);
+        console.log("response email send", responseMail);
+        await updateItem(id, otpCode);
+      } catch (error) {
+        console.error("Error Sending email", error);
+      }
     }
-  } else if (event.httpMethod == "PUT") {
-    console.log("esto es un PUT");
+  } else if (event.httpMethod == "GET" && event.path == '/code' && code && id) {
+    const responseDynamo = await getItem(id);
+    if (responseDynamo != null && responseDynamo?.code == code) {
+      allow = true;
+    } else {
+      allow = false;
+    }
   }
 
   let res = {
@@ -121,6 +120,6 @@ export const handler = async (event, context, callback) => {
       "Access-Control-Allow-Origin": "*", // Required for CORS support to work
     },
   };
-  res.body = "{ \"message\": \"Hello from Abbott!\"}";
+  res.body = JSON.stringify({allow})
   callback(null, res);
 };
