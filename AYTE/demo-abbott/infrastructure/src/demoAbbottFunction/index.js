@@ -1,11 +1,11 @@
 import {
   DynamoDBClient,
   GetItemCommand,
-  PutItemCommand,
   UpdateItemCommand,
 } from "@aws-sdk/client-dynamodb";
 import { SendEmailCommand, SESClient } from "@aws-sdk/client-ses";
 import { unmarshall } from "@aws-sdk/util-dynamodb";
+import { DynamoDBDocumentClient, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
 // Set the AWS Region.
 const REGION = "us-east-1";
@@ -14,6 +14,7 @@ const sesClient = new SESClient({ region: REGION });
 
 // Create an Amazon DynamoDB service client object.
 const client = new DynamoDBClient({});
+const docClient = DynamoDBDocumentClient.from(client);
 
 export const getItem = async (id) => {
   console.log("before get");
@@ -41,13 +42,33 @@ export const updateItem = async (id, code) => {
     Key: {
       "id-card": { N: id },
     },
-    UpdateExpression: "set code = :code", ExpressionAttributeValues: {":code": { N: ''+code}}, ReturnValues: "ALL_NEW"
+    UpdateExpression: "set code = :code",
+    ExpressionAttributeValues: { ":code": { N: "" + code } },
+    ReturnValues: "ALL_NEW",
   };
   const command = new UpdateItemCommand(params);
   const response = await client.send(command);
   console.log("updateResponse", response);
   return response;
+};
 
+export const puitItem = async (id, putData) => {
+  console.log("before put");
+  const command = new UpdateCommand({
+    TableName: "demo-abbott-demoAbbott-1TMM2C43BCIKL",
+    Key: {
+      "id-card": +id,
+    },
+    UpdateExpression: "set visitor = :visitor",
+    ExpressionAttributeValues: {
+      ":visitor": putData,
+    },
+    ReturnValues: "ALL_NEW",
+  });
+
+  const response = await docClient.send(command);
+  console.log("updateResponse", response);
+  return response;
 };
 
 const sendEmail = async (recipient, code) => {
@@ -83,14 +104,13 @@ const sendEmail = async (recipient, code) => {
 };
 
 export const handler = async (event, context, callback) => {
-
   const id = event.queryStringParameters?.id;
   const code = event.queryStringParameters?.code;
   let otpCode = Math.floor(100000 + Math.random() * 900000);
   let allow = false;
 
   console.log("event", event);
-  if (event.httpMethod == "GET" && id && event.path != '/code') {
+  if (event.httpMethod == "GET" && id && event.path != "/code") {
     const responseDynamo = await getItem(id);
     if (responseDynamo == null) {
       allow = false;
@@ -104,12 +124,29 @@ export const handler = async (event, context, callback) => {
         console.error("Error Sending email", error);
       }
     }
-  } else if (event.httpMethod == "GET" && event.path == '/code' && code && id) {
+  } else if (event.httpMethod == "GET" && event.path == "/code" && code && id) {
     const responseDynamo = await getItem(id);
     if (responseDynamo != null && responseDynamo?.code == code) {
       allow = true;
     } else {
       allow = false;
+    }
+  } else if (event.httpMethod == "PUT" && event.body) {
+    const responseDynamo = await getItem(id);
+    if (responseDynamo){
+      const visitor = responseDynamo?.visitor;
+      const data = JSON.parse(event.body);
+      const index = visitor.findIndex((e) => e.product+e.name == data[0].product+data[0].name)
+      let putData = [];
+
+      if (index >= 0){
+        visitor[index].count = data[0].count+visitor[index].count;
+        putData = visitor;
+      }else {
+        putData = [...visitor, ...data];
+      }
+      console.log('putData', putData);
+      await puitItem(id, putData);
     }
   }
 
@@ -120,6 +157,6 @@ export const handler = async (event, context, callback) => {
       "Access-Control-Allow-Origin": "*", // Required for CORS support to work
     },
   };
-  res.body = JSON.stringify({allow})
+  res.body = JSON.stringify({ allow });
   callback(null, res);
 };
