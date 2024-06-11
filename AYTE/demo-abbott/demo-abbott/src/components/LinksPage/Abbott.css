@@ -7,7 +7,8 @@
   justify-content: center;
   min-height: 100vh;
   padding: 20px;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 .avatar {
@@ -26,8 +27,8 @@
 }
 
 .link-list {
-  width: 100%;
-  max-width: 400px;
+  width: 150%;
+  max-width: 1280px;
   display: flex;
   align-items: center;
   flex-direction: column;

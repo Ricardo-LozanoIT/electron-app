@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import Logo from "./assets/icons/logoAbbott.png";
 import foot from "./assets/icons/abbottFooter.png";
 import { MainPage } from "./components/mainpage/MainPage";
@@ -5,6 +6,8 @@ import { Abbott } from "./components/LinksPage/Abbott";
 import "./App.css";
 
 function App() {
+  const router = window.location.pathname;
+  console.log(router);
   const userData = {
     avatar: "https://via.placeholder.com/120",
     name: "Links about Abbott",
@@ -32,12 +35,15 @@ function App() {
       <div className="header">
         <img src={Logo} alt="logo" />
       </div>
-      <MainPage />
-      {/* <Abbott
-        avatar={userData.avatar}
-        name={userData.name}
-        links={userData.links}
-      /> */}
+      {router != "/link" ? (
+        <MainPage />
+      ) : (
+        <Abbott
+          avatar={userData.avatar}
+          name={userData.name}
+          links={userData.links}
+        />
+      )}
       <div className="footer">
         <img src={foot} alt="logo" />
       </div>

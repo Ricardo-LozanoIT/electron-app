@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-import React from "react";
 import "./Abbott.css";
 import abbott from "../../assets/icons/abbott.png";
 

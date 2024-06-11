@@ -1,10 +1,23 @@
-/* eslint-disable react/prop-types */
+/* eslint-disable */
+import { useState } from "react";
 import ensure from "../../assets/ensure.png";
 import pedialyte from "../../assets/pedialyte.png";
 import styles from "./ValidationProduct.module.scss";
+import axios from "axios";
 
-export const ValidationProduct = ({ product }) => {
-  console.log(product);
+export const ValidationProduct = ({ product, id }) => {
+  const [productCant, setProductCant] = useState("");
+  const [visitorName, setVisitorName] = useState("");
+
+  const postInformation = async (id) => {
+    const resp = await axios.put(
+      "https://93buay9mm1.execute-api.us-east-1.amazonaws.com/Prod",
+      { count: productCant, name: visitorName, product },
+      { params: { id }, headers: { 'Content-Type': 'application/json'}}
+    );
+    console.log(resp?.data?.message);
+  };
+
   const productRegister = (product) => {
     switch (product) {
       case "ensure":
@@ -15,6 +28,7 @@ export const ValidationProduct = ({ product }) => {
         return "producto no encontrado";
     }
   };
+
   return (
     <>
       <div className={styles.image_product}>{productRegister(product)}</div>
@@ -25,7 +39,7 @@ export const ValidationProduct = ({ product }) => {
             <input
               type="text"
               maxLength={1}
-              //onChange={(value) => setId(value?.target?.value)}
+              onChange={(value) => setProductCant(value?.target?.value)}
             />
           </div>
         </div>
@@ -34,10 +48,15 @@ export const ValidationProduct = ({ product }) => {
             <span>Nombre visitador</span>
             <input
               type="text"
-              //onChange={(value) => setId(value?.target?.value)}
+              onChange={(value) => setVisitorName(value?.target?.value)}
             />
           </div>
         </div>
+      </div>
+      <div className={styles.container_button}>
+        <button className={styles.button} onClick={() => postInformation(id)}>
+          Enviar
+        </button>
       </div>
     </>
   );

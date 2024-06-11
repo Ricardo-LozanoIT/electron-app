@@ -10,10 +10,9 @@ export const MainPage = () => {
   const [codeNumber, setCodeNumber] = useState("");
   const [validateCode, setValidateCode] = useState(false);
 
-  const params = new Proxy(new URLSearchParams(window.location.search), {
-    get: (searchParams, prop) => searchParams.get(prop),
-  });
-  const productRegister = params.product;
+  const params = window.location.pathname;
+  const productRegister = params.slice(1);
+  console.log(productRegister);
 
   const getAutentication = async (id) => {
     const resp = await axios.get(
@@ -40,7 +39,7 @@ export const MainPage = () => {
 
   return validateCode ? (
     <>
-      <ValidationProduct product={productRegister} />
+      <ValidationProduct product={productRegister} id={id} />
     </>
   ) : (
     <>
