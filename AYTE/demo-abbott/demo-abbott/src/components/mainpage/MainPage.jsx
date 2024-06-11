@@ -11,7 +11,8 @@ export const MainPage = () => {
   const [validateCode, setValidateCode] = useState(false);
 
   const params = window.location.pathname;
-  const productRegister = params.slice(1);
+  const productRegister = params.replaceAll('/','');
+  console.log(productRegister);
 
   const getAutentication = async (id) => {
     const resp = await axios.get(
@@ -26,7 +27,7 @@ export const MainPage = () => {
       "https://93buay9mm1.execute-api.us-east-1.amazonaws.com/Prod/code",
       { params: { id, code } }
     );
-    
+
     setValidateCode(resp?.data?.allow);
     if (resp?.data?.allow) {
       alert("Bienvenido a Abbott");

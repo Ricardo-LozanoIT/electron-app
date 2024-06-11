@@ -15,7 +15,7 @@ export const ValidationProduct = ({ product, id }) => {
       [{ count: +productCant, name: visitorName, product }],
       { params: { id }, headers: { "Content-Type": "application/json" } }
     );
-    
+
     if (resp?.data?.message == 'Success') {
       alert("Producto y datos ingresados correctamente");
     } else {
@@ -40,7 +40,7 @@ export const ValidationProduct = ({ product, id }) => {
       <div className={styles.container_info}>
         <div className={styles.inputsForm}>
           <div className={styles.input}>
-            <span>ingresa la cantidad recibida</span>
+            <span>Ingresa la cantidad recibida</span>
             <input
               type="text"
               maxLength={1}
