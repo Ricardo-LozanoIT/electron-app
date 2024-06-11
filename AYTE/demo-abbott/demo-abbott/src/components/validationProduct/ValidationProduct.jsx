@@ -15,7 +15,7 @@ export const ValidationProduct = ({ product, id }) => {
       [{ count: +productCant, name: visitorName, product }],
       { params: { id }, headers: { "Content-Type": "application/json" } }
     );
-    console.log(resp?.data?.message);
+    
     if (resp?.data?.message == 'Success') {
       alert("Producto y datos ingresados correctamente");
     } else {

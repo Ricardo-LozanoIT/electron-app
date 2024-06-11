@@ -12,14 +12,12 @@ export const MainPage = () => {
 
   const params = window.location.pathname;
   const productRegister = params.slice(1);
-  console.log(productRegister);
 
   const getAutentication = async (id) => {
     const resp = await axios.get(
       "https://93buay9mm1.execute-api.us-east-1.amazonaws.com/Prod",
       { params: { id } }
     );
-    console.log(resp?.data?.allow);
     setCode(resp?.data?.allow);
   };
 
@@ -28,7 +26,7 @@ export const MainPage = () => {
       "https://93buay9mm1.execute-api.us-east-1.amazonaws.com/Prod/code",
       { params: { id, code } }
     );
-    console.log(resp?.data?.allow, validateCode);
+    
     setValidateCode(resp?.data?.allow);
     if (resp?.data?.allow) {
       alert("Bienvenido a Abbott");
@@ -46,7 +44,7 @@ export const MainPage = () => {
       <div className={styles.container}>
         <div className={styles.inputsForm}>
           <div className={styles.input}>
-            <span>Numero de Identificacion</span>
+            <span>Número de Identificación</span>
             <input
               type="text"
               maxLength={10}
@@ -57,7 +55,7 @@ export const MainPage = () => {
         {code ? (
           <div className={styles.container_code}>
             <span className={styles.tittle}>
-              Ingrese el codigo que fue enviado a su correo
+              Ingrese el código que fue enviado a su correo
             </span>
             <div className={styles.container_codeNumber}>
               <input

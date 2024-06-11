@@ -7,7 +7,7 @@ import "./App.css";
 
 function App() {
   const router = window.location.pathname;
-  console.log(router);
+  
   const userData = {
     avatar: "https://via.placeholder.com/120",
     name: "Links about Abbott",
