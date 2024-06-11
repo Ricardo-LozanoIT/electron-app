@@ -1,6 +1,11 @@
 #root {
   max-width: 1280px;
+  height: 830px;
+  margin: -8px;
   width: 100%;
+  background-image: url('assets/fondo.png');
+  /* background: #00648e; */
+  position: fixed;
 }
 .header {
   position: fixed;
