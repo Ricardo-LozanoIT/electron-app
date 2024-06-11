@@ -12,7 +12,6 @@ export const MainPage = () => {
 
   const params = window.location.pathname;
   const productRegister = params.replaceAll('/','');
-  console.log(productRegister);
 
   const getAutentication = async (id) => {
     const resp = await axios.get(

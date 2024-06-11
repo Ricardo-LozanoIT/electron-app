@@ -6,7 +6,8 @@ import { Abbott } from "./components/LinksPage/Abbott";
 import "./App.css";
 
 function App() {
-  const router = window.location.pathname;
+  const link = window.location.pathname;
+  const router = link.replaceAll('/','')
   
   const userData = {
     avatar: "https://via.placeholder.com/120",
@@ -35,7 +36,7 @@ function App() {
       <div className="header">
         <img src={Logo} alt="logo" />
       </div>
-      {router != "/links" ? (
+      {router != "links" ? (
         <MainPage />
       ) : (
         <Abbott
