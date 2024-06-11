@@ -1,0 +1,85 @@
+/* Abbott.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  border: 3px solid #4a90e2;
+}
+
+.title {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.link-list {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.link-item {
+  display: block;
+  width: 50%;
+  padding: 15px;
+  margin-bottom: 10px;
+  text-align: center;
+  color: white;
+  background-color: #4a90e2;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 18px;
+  transition: background-color 0.3s;
+}
+
+.link-item:hover {
+  background-color: #357abd;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .avatar {
+    width: 100px;
+    height: 100px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .link-item {
+    font-size: 16px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .link-item {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
