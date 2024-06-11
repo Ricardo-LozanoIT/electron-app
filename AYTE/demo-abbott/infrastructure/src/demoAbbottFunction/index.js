@@ -158,6 +158,7 @@ export const handler = async (event, context, callback) => {
       };
       res.body = JSON.stringify({ message: "Success" });
       callback(null, res);
+      return;
     } else {
       let res = {
         statusCode: 404,
@@ -168,6 +169,7 @@ export const handler = async (event, context, callback) => {
       };
       res.body = JSON.stringify({ message: "Not found" });
       callback(null, res);
+      return;
     }
   }
 
