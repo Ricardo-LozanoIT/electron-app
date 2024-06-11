@@ -133,20 +133,41 @@ export const handler = async (event, context, callback) => {
     }
   } else if (event.httpMethod == "PUT" && event.body) {
     const responseDynamo = await getItem(id);
-    if (responseDynamo){
+    if (responseDynamo) {
       const visitor = responseDynamo?.visitor;
       const data = JSON.parse(event.body);
-      const index = visitor.findIndex((e) => e.product+e.name == data[0].product+data[0].name)
+      const index = visitor.findIndex(
+        (e) => e.product + e.name == data[0].product + data[0].name
+      );
       let putData = [];
 
-      if (index >= 0){
-        visitor[index].count = data[0].count+visitor[index].count;
+      if (index >= 0) {
+        visitor[index].count = data[0].count + visitor[index].count;
         putData = visitor;
-      }else {
+      } else {
         putData = [...visitor, ...data];
       }
-      console.log('putData', putData);
+      console.log("putData", putData);
       await puitItem(id, putData);
+      let res = {
+        statusCode: 200,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*", // Required for CORS support to work
+        },
+      };
+      res.body = JSON.stringify({ message: "Success" });
+      callback(null, res);
+    } else {
+      let res = {
+        statusCode: 404,
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*", // Required for CORS support to work
+        },
+      };
+      res.body = JSON.stringify({ message: "Not found" });
+      callback(null, res);
     }
   }
 
