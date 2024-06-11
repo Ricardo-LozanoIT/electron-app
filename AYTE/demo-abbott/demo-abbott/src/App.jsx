@@ -35,7 +35,7 @@ function App() {
       <div className="header">
         <img src={Logo} alt="logo" />
       </div>
-      {router != "/link" ? (
+      {router != "/links" ? (
         <MainPage />
       ) : (
         <Abbott

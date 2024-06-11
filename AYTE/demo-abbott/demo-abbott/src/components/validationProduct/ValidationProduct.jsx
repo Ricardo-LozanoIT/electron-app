@@ -12,10 +12,15 @@ export const ValidationProduct = ({ product, id }) => {
   const postInformation = async (id) => {
     const resp = await axios.put(
       "https://93buay9mm1.execute-api.us-east-1.amazonaws.com/Prod",
-      { count: productCant, name: visitorName, product },
-      { params: { id }, headers: { 'Content-Type': 'application/json'}}
+      [{ count: +productCant, name: visitorName, product }],
+      { params: { id }, headers: { "Content-Type": "application/json" } }
     );
     console.log(resp?.data?.message);
+    if (resp?.data?.message == 'Success') {
+      alert("Producto y datos ingresados correctamente");
+    } else {
+      alert("Producto ingresado incorrecto");
+    }
   };
 
   const productRegister = (product) => {
