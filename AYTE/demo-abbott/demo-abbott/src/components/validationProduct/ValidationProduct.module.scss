@@ -1,0 +1,49 @@
+.image_product{
+    padding-top: 120px;
+    display: flex;
+    justify-content: center;
+
+    img{
+        width: 200px;
+        height: 200px;
+    }
+}
+
+.container_info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 16px;
+    
+    .inputsForm {
+        max-width: 1280px;
+        width: 98%;
+        background: #d9d9d6;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0 10px 5px;
+        row-gap: 10px;
+        border-radius: 50px 50px 50px 50px;
+    
+        & .input {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+    
+          & span {
+            color: #00577b;
+            font-size: 18px;
+            font-family: cursive;
+          }
+    
+          & input {
+            border: 1px solid #000000;
+            border-radius: 10px 0px 10px 0px;
+            height: 30px;
+            font-size: 20px;
+          }
+        }
+      }
+}

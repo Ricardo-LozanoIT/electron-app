@@ -2,6 +2,7 @@
 import { useState } from "react";
 import styles from "./MainPage.module.scss";
 import axios from "axios";
+import { ValidationProduct } from "../validationProduct/ValidationProduct";
 
 export const MainPage = () => {
   const [code, setCode] = useState(false);
@@ -12,6 +13,7 @@ export const MainPage = () => {
   const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop),
   });
+  const productRegister = params.product;
 
   const getAutentication = async (id) => {
     const resp = await axios.get(
@@ -27,7 +29,7 @@ export const MainPage = () => {
       "https://93buay9mm1.execute-api.us-east-1.amazonaws.com/Prod/code",
       { params: { id, code } }
     );
-    console.log(resp?.data?.allow);
+    console.log(resp?.data?.allow, validateCode);
     setValidateCode(resp?.data?.allow);
     if (resp?.data?.allow) {
       alert("Bienvenido a Abbott");
@@ -36,7 +38,11 @@ export const MainPage = () => {
     }
   };
 
-  return (
+  return validateCode ? (
+    <>
+      <ValidationProduct product={productRegister} />
+    </>
+  ) : (
     <>
       <div className={styles.container}>
         <div className={styles.inputsForm}>
@@ -52,7 +58,7 @@ export const MainPage = () => {
         {code ? (
           <div className={styles.container_code}>
             <span className={styles.tittle}>
-              Ingrese el codigo que fue enviado a su celular o correo
+              Ingrese el codigo que fue enviado a su correo
             </span>
             <div className={styles.container_codeNumber}>
               <input

@@ -16,11 +16,13 @@
     & .input {
       display: flex;
       flex-direction: column;
+      align-items: center;
       gap: 20px;
 
       & span {
-        color: #009ada;
+        color: #00577b;
         font-size: 18px;
+        font-family: 'Times New Roman', Times, serif;
       }
 
       & input {
@@ -32,32 +34,34 @@
     }
   }
 
-  .container_code{
+  .container_code {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
     align-items: center;
     margin-top: 20px;
 
-    & .tittle{
-        font-size: 16px;
-        font-weight: bold;
+    & .tittle {
+      font-size: 16px;
+      font-weight: bold;
+      font-family: cursive;
+      width: 225px;
     }
 
-    & .container_codeNumber{
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        align-items: center;
-        column-gap: 12px;
-        margin-top: 12px;
+    & .container_codeNumber {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      align-items: center;
+      column-gap: 12px;
+      margin-top: 12px;
 
-        input{
-          border: 1px solid #000000;
-          border-radius: 10px 0px 10px 0px;
-          height: 30px;
-          font-size: 20px;
-        }
+      input {
+        border: 1px solid #000000;
+        border-radius: 10px 0px 10px 0px;
+        height: 30px;
+        font-size: 20px;
+      }
     }
   }
 
