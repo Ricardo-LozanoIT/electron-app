@@ -204,5 +204,62 @@
         }
       }
     }
+
+    .container_results {
+      display: flex;
+      flex-direction: column;
+      width: 1152px;
+
+      .body_results {
+        align-items: center;
+        display: flex;
+        height: 64px;
+        justify-content: space-between;
+        padding-block: 10px;
+        padding-left: 37px;
+        width: 100%;
+
+        .item_results {
+          color: #343741;
+          display: flex;
+          font-size: 14px;
+          justify-content: flex-start;
+          padding-inline: 0 8px;
+          width: 111.27px;
+
+          .item_text {
+            display: flex;
+            flex-direction: column;
+            width: max-content;
+
+            .text_value {
+              display: inline-block;
+              height: max-content;
+              margin-bottom: 2px;
+              max-height: 34px;
+              max-width: 111.27px;
+              overflow: hidden;
+              padding-right: 16px;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+          }
+        }
+      }
+    }
+  }
+  .btn_print {
+    background: #99e5ea 0 0 no-repeat padding-box;
+    border: 1px solid #99e5ea;
+    border-radius: 3px;
+    box-shadow: 0 3px 0 #06748c;
+    font-family: "roboto regular", sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    height: 48px;
+    margin-left: 20px;
+    opacity: 1;
+    width: 159px;
+    cursor: pointer;
   }
 }

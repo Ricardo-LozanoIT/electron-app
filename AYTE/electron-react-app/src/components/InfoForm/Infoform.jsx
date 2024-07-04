@@ -3,7 +3,6 @@ import "./InfoForm.css";
 import axios from "axios";
 
 export const Infoform = () => {
-  const [showValue, setShowValue] = useState(false);
   const [plate, setPlate] = useState("");
   const [model, setModel] = useState("");
   const [brand, setBrant] = useState("");
@@ -12,10 +11,6 @@ export const Infoform = () => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [value, setValue] = useState("");
-
-  const setValueForm = () => {
-    setShowValue(true);
-  };
 
   const cleanInputs = () => {
     const plateBlanks = document.getElementsByClassName("input_text");

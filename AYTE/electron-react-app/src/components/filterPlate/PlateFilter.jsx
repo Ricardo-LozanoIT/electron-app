@@ -10,6 +10,21 @@ export const PlateFilter = () => {
   const [plate, setPlate] = useState("");
   const [data, setData] = useState({});
 
+  const handlePrint = () => {
+    console.log('electron', window.electron);
+    console.log('electron.print', window.electron.print);
+    if (window.electron && window.electron.print) {
+      const options = {
+        silent: true,  // Imprime sin mostrar el diálogo
+        printBackground: true,  // Imprime el fondo de la página
+        deviceName: ''  // Nombre de la impresora (opcional), déjalo vacío para usar la impresora predeterminada
+      };
+      window.electron.print(options);
+    } else {
+      console.error('Electron API not available');
+    }
+  };
+
   const getInformationCar = async (plateId) => {
     const resp = await axios.get(
       "https://bnd5ie842i.execute-api.us-east-1.amazonaws.com/Prod",
@@ -18,7 +33,7 @@ export const PlateFilter = () => {
     if (resp) {
       console.log(resp.data);
       setData(resp.data);
-      setFilter(true)
+      setFilter(true);
       return resp.data;
     } else {
       setBadInfo(true);
@@ -113,6 +128,58 @@ export const PlateFilter = () => {
                     <span className="tittle_results">Valor</span>
                   </div>
                 </div>
+                <div className="container_results">
+                  <div className="body_results">
+                    <div className="item_results">
+                      <div className="item_text">
+                        <span className="text_value">{data.plate}</span>
+                      </div>
+                    </div>
+                    <div className="item_results">
+                      <div className="item_text">
+                        <span className="text_value">{data.model}</span>
+                      </div>
+                    </div>
+                    <div className="item_results">
+                      <div className="item_text">
+                        <span className="text_value">{data.brand}</span>
+                      </div>
+                    </div>
+                    <div className="item_results">
+                      <div className="item_text">
+                        <span className="text_value">{data.color}</span>
+                      </div>
+                    </div>
+                    <div className="item_results">
+                      <div className="item_text">
+                        <span className="text_value">{data.weight}</span>
+                      </div>
+                    </div>
+                    <div className="item_results">
+                      <div className="item_text">
+                        <span className="text_value">{data.date}</span>
+                      </div>
+                    </div>
+                    <div className="item_results">
+                      <div className="item_text">
+                        <span className="text_value">{data.hour}</span>
+                      </div>
+                    </div>
+                    <div
+                      className="item_results"
+                      style={{ marginRight: "35px" }}
+                    >
+                      <div className="item_text">
+                        <span className="text_value">{data.pricing}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="button_ptint" style={{ padding: "20px" }}>
+                <button className="btn_print" onClick={() => handlePrint()}>
+                  Imprimir
+                </button>
               </div>
             </div>
           </>

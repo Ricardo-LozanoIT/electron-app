@@ -1,4 +1,4 @@
-import { app, BrowserWindow, session } from 'electron';
+import { app, BrowserWindow, ipcMain, session } from 'electron';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import isDev from 'electron-is-dev';
@@ -11,8 +11,9 @@ function createWindow() {
     width: 1280,
     height: 850,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
+      preload: path.join(__dirname, '../electron/preload.js'), // Ajusta la ruta aquí
+      nodeIntegration: false,
+      contextIsolation: true,
     },
   });
 
@@ -22,15 +23,19 @@ function createWindow() {
       : `file://${path.join(__dirname, '../build/index.html')}`
   );
 
+  ipcMain.on('print', (event, options) => {
+    win.webContents.print(options, (success, errorType) => {
+      if (!success) console.log(errorType);
+    });
+  });
+
   if (isDev) {
     win.webContents.openDevTools();
   }
 }
 
 app.on('ready', () => {
-  // Configurar opciones de OpenSSL para sesiones
   session.defaultSession.setCertificateVerifyProc((request, callback) => {
-    // Implementa tu lógica de verificación de certificados aquí si es necesario
     callback(0); // 0 significa que el certificado es válido
   });
 
